@@ -1,0 +1,92 @@
+[
+  {
+    "_id": "589752c7dfafca764f2ec686",
+    "index": 0,
+    "guid": "8728879a-496f-477d-b629-693c52af5674",
+    "isActive": false,
+    "balance": "$3,532.81",
+    "picture": "http://placehold.it/32x32",
+    "age": 26,
+    "eyeColor": "blue",
+    "name": "Sheena Mueller",
+    "gender": "female",
+    "company": "QUOTEZART",
+    "email": "sheenamueller@quotezart.com",
+    "phone": "+1 (914) 492-3559",
+    "address": "940 Jamison Lane, Cataract, Texas, 3502",
+    "about": "Amet reprehenderit sunt incididunt laboris ea sint quis ipsum. Ipsum ipsum cupidatat incididunt ad dolore adipisicing laboris ex velit culpa fugiat aliqua sit. Magna cillum veniam commodo enim ea eiusmod eiusmod minim commodo sit nisi dolore. Voluptate consectetur qui anim qui ea id nisi. Pariatur cupidatat laborum quis nulla exercitation qui duis ullamco velit.\r\n",
+    "registered": "2016-07-02T01:31:06 -02:00",
+    "latitude": -7.529114,
+    "longitude": 80.354264,
+    "tags": [
+      "culpa",
+      "officia",
+      "ad",
+      "quis",
+      "aliquip",
+      "veniam",
+      "eiusmod"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Bowman Castillo"
+      },
+      {
+        "id": 1,
+        "name": "Fox Frederick"
+      },
+      {
+        "id": 2,
+        "name": "Myers Berger"
+      }
+    ],
+    "greeting": "Hello, Sheena Mueller! You have 8 unread messages.",
+    "favoriteFruit": "apple"
+  },
+  {
+    "_id": "589752c7202108353b2d3464",
+    "index": 1,
+    "guid": "0624b195-c493-469f-be79-3acd490ad9ff",
+    "isActive": false,
+    "balance": "$3,476.15",
+    "picture": "http://placehold.it/32x32",
+    "age": 39,
+    "eyeColor": "green",
+    "name": "Parker Schroeder",
+    "gender": "male",
+    "company": "LINGOAGE",
+    "email": "parkerschroeder@lingoage.com",
+    "phone": "+1 (830) 422-2544",
+    "address": "342 President Street, Snowville, Michigan, 691",
+    "about": "Do do aliqua velit cillum est in sint in pariatur magna dolor. Dolor sunt cupidatat proident tempor nisi cupidatat. Nostrud minim nulla sit occaecat. Laboris pariatur et tempor commodo ullamco dolore fugiat eiusmod sint cupidatat et. Dolore nisi esse est fugiat nulla irure ipsum magna reprehenderit. Do magna veniam elit et fugiat commodo deserunt. Consequat veniam consequat est non.\r\n",
+    "registered": "2016-08-13T02:22:16 -02:00",
+    "latitude": 48.18813,
+    "longitude": 136.168787,
+    "tags": [
+      "sunt",
+      "nisi",
+      "irure",
+      "ex",
+      "culpa",
+      "dolor",
+      "anim"
+    ],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Ruthie Delacruz"
+      },
+      {
+        "id": 1,
+        "name": "Mueller Hogan"
+      },
+      {
+        "id": 2,
+        "name": "Aida Reid"
+      }
+    ],
+    "greeting": "Hello, Parker Schroeder! You have 2 unread messages.",
+    "favoriteFruit": "banana"
+  }
+]
