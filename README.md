@@ -152,8 +152,8 @@ npm test:coverage
 
 MIT License © [Patrick Heng](http://hengpatrick.fr/) [Fabien Motte](http://fabienmotte.com/) 
 
-[travis-image]: https://img.shields.io/travis/fm_ph/quark-signal/master.svg?style=flat-square
-[travis-url]: http://travis-ci.org/fm_ph/quark-signal
+[travis-image]: https://img.shields.io/travis/fm-ph/quark-signal/master.svg?style=flat-square
+[travis-url]: http://travis-ci.org/fm-ph/quark-signal
 [stability-image]: https://img.shields.io/badge/stability-stable-brightgreen.svg?style=flat-square
 [stability-url]: https://nodejs.org/api/documentation.html#documentation_stability_index
 [npm-image]: https://img.shields.io/npm/v/quark-signal.svg?style=flat-square
