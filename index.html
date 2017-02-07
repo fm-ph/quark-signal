@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Signal.html">Signal</a><ul class='methods'><li data-type='method'><a href="Signal.html#add">add</a></li><li data-type='method'><a href="Signal.html#dispatch">dispatch</a></li><li data-type='method'><a href="Signal.html#getListenersNb">getListenersNb</a></li><li data-type='method'><a href="Signal.html#once">once</a></li><li data-type='method'><a href="Signal.html#remove">remove</a></li><li data-type='method'><a href="Signal.html#removeAll">removeAll</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section class="readme">
+        <article><h1>quark-signal</h1><p><a href="http://travis-ci.org/fm-ph/quark-signal"><img src="https://img.shields.io/travis/fm-ph/quark-signal/master.svg?style=flat-square" alt="build status"></a>
+<a href="https://nodejs.org/api/documentation.html#documentation_stability_index"><img src="https://img.shields.io/badge/stability-stable-brightgreen.svg?style=flat-square" alt="stability"></a>
+<a href="https://npmjs.org/package/quark-signal"><img src="https://img.shields.io/npm/v/quark-signal.svg?style=flat-square" alt="npm version"></a>
+<a href="https://github.com/feross/standard"><img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square" alt="js-standard-style"></a>
+<a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square" alt="semantic-release"></a></p>
+<p>Simple and tiny <a href="https://en.wikipedia.org/wiki/Observer_pattern"><strong>Observer</strong></a> design pattern implementation written in <strong>ES6</strong>.</p>
+<p><strong><em>This package is part of <code>quark</code> framework but it can be used independently.</em></strong></p>
+<h2>Installation</h2><p><a href="https://www.npmjs.com/package/quark-signal"><img src="https://nodei.co/npm/quark-signal.png" alt="NPM"></a></p>
+<pre class="prettyprint source lang-sh"><code>npm install quark-signal --save</code></pre><h2>Usage</h2><h3>Basic</h3><p>Basic example using <code>add()</code> and <code>dispatch()</code> methods.</p>
+<pre class="prettyprint source lang-js"><code>import Signal from 'quark-signal'
+
+const mySignal = new Signal()
+
+mySignal.add(data => { console.log(data) })
+mySignal.dispatch('foo')</code></pre><h3>Add once</h3><p>Add a signal listener that will be called only once.</p>
+<pre class="prettyprint source lang-js"><code>import Signal from 'quark-signal'
+
+const mySignal = new Signal()
+
+mySignal.once(data => { console.log(data) })
+mySignal.dispatch('foo')
+
+// It will not be dispatched again
+mySignal.dispatch('foo')</code></pre><h3>Priority</h3><p>Priorise a listener so that it will be called first when a signal is dispatched.
+Higher priority listener will be called earlier.</p>
+<pre class="prettyprint source lang-js"><code>import Signal from 'quark-signal'
+
+const mySignal = new Signal()
+
+mySignal.add(data => { console.log(data) })
+mySignal.add(data => { console.log(data) }, { priority: 1 }) // It will be called first
+
+mySignal.dispatch('foo')</code></pre><h3>Context</h3><p>Bind a signal listener with a specific context.</p>
+<pre class="prettyprint source lang-js"><code>import Signal from 'quark-signal'
+
+const obj = {
+  foo: 'bar'
+}
+
+function callback () {
+  console.log(this.foo) // = 'bar'
+}
+
+const mySignal = new Signal()
+
+mySignal.add(callback, { context: obj })
+mySignal.dispatch()</code></pre><h3>Remove</h3><p>Remove a signal listener.</p>
+<pre class="prettyprint source lang-js"><code>import Signal from 'quark-signal'
+
+const mySignal = new Signal()
+
+const listener = data => { console.log(data) }
+
+mySignal.add(listener)
+mySignal.dispatch('foo')
+mySignal.remove(listener)</code></pre><p>Remove all signal listeners.</p>
+<pre class="prettyprint source lang-js"><code>import Signal from 'quark-signal'
+
+const mySignal = new Signal()
+
+const listener = data => { console.log(data) }
+
+mySignal.add(listener)
+mySignal.add(listener)
+mySignal.removeAll()</code></pre><h2>API</h2><p>See <a href="https://fm-ph.github.io/quark-signal/">https://fm-ph.github.io/quark-signal/</a></p>
+<h2>Testing</h2><p>To run the <code>quark-signal</code> tests, first clone the repository and install its dependencies :</p>
+<pre class="prettyprint source lang-sh"><code>git clone https://github.com/fm_ph/quark-signal.git
+cd quark-signal
+npm install</code></pre><p>Then, run the tests with :</p>
+<pre class="prettyprint source lang-sh"><code>npm test</code></pre><p>For coverage, use :</p>
+<pre class="prettyprint source lang-sh"><code>npm test:coverage</code></pre><h2>References</h2><ul>
+<li><a href="https://github.com/edankwan/min-signal">https://github.com/edankwan/min-signal</a></li>
+<li><a href="https://github.com/millermedeiros/js-signals">https://github.com/millermedeiros/js-signals</a></li>
+<li><a href="https://github.com/robertpenner/as3-signals">https://github.com/robertpenner/as3-signals</a></li>
+</ul>
+<h2>License</h2><p>MIT License © <a href="http://hengpatrick.fr/">Patrick Heng</a> <a href="http://fabienmotte.com/">Fabien Motte</a> </p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Feb 07 2017 22:04:19 GMT+0100 (CET) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>index.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Signal.html">Signal</a><ul class='methods'><li data-type='method'><a href="Signal.html#add">add</a></li><li data-type='method'><a href="Signal.html#dispatch">dispatch</a></li><li data-type='method'><a href="Signal.html#getListenersNb">getListenersNb</a></li><li data-type='method'><a href="Signal.html#once">once</a></li><li data-type='method'><a href="Signal.html#remove">remove</a></li><li data-type='method'><a href="Signal.html#removeAll">removeAll</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Signal class
+ *
+ * @class
+ *
+ * @license {@link https://opensource.org/licenses/MIT|MIT}
+ *
+ * @author Patrick Heng &lt;hengpatrick.pro@gmail.com>
+ * @author Fabien Motte &lt;contact@fabienmotte.com>
+ *
+ * @example
+ * const mySignal = new Signal()
+ *
+ * mySignal.add(bar => { console.log(bar) })
+ * mySignal.dispatch('foo')
+ */
+class Signal {
+  /**
+   * Creates an instance of Signal
+   *
+   * @constructor
+   */
+  constructor () {
+    this.listeners = []
+  }
+
+  /**
+   * Add a listener
+   *
+   * @param {listenerCallback} cb Callback
+   * @param {Object} [options] Options
+   * @param {string} [options.priority=0] Higher priority listener will be called earlier
+   * @param {string} [options.once=false] Listener called once
+   * @param {string} [options.context=this] Bind the listener with a specific context
+   *
+   * @throws {TypeError} First argument must be a Function
+   * @throws {Error} Listener already exists
+   *
+   * @returns {this}
+   */
+  add (cb, options = { priority: 0, once: false, context: this }) {
+    if (typeof cb !== 'function') {
+      throw new TypeError('QuarkSignal.add() : First argument must be a Function')
+    }
+
+    if (this._getListernerIndex(cb) !== -1) {
+      throw new Error('QuarkSignal.add() : Listener already exists')
+    }
+
+    const listener = {
+      context: this, // If options object is defined but no context precised
+      ...options,
+      function: cb
+    }
+
+    this.listeners.push(listener)
+
+    // Sort listeners function by priority
+    this.listeners.sort((a, b) => a.priority &lt; b.priority)
+
+    return this
+  }
+
+  /**
+   * Add a listener once
+   *
+   * @param {listenerCallback} cb Callback
+   * @param {Object} [options] Options
+   * @param {string} [options.priority=0] Higher priority listener will be called earlier
+   * @param {string} [options.context=this] Bind the listener with a specific context
+   *
+   * @returns {this}
+   */
+  once (cb, options = {}) {
+    return this.add(cb, {
+      ...options,
+      once: true
+    })
+  }
+
+  /**
+   * Remove a listener
+   *
+   * @param {listenerCallback} cb Callback
+   *
+   * @returns {this}
+   *
+   * @throws {TypeError} First argument must be a Function
+   * @throws {Error} Listener does not exist
+   */
+  remove (cb) {
+    if (typeof cb !== 'function') {
+      throw new TypeError('QuarkSignal.remove() : First argument must be a Function')
+    }
+
+    const listenerId = this._getListernerIndex(cb)
+
+    if (listenerId === -1) {
+      throw new Error('QuarkSignal.remove() : Listener does not exist')
+    }
+
+    this.listeners.splice(listenerId)
+
+    return this
+  }
+
+  /**
+   * Remove all listeners
+   *
+   * @returns {this}
+   */
+  removeAll () {
+    this.listeners = []
+
+    return this
+  }
+
+  /**
+   * Dispatch a signal
+   *
+   * @param {...any} [args] Arguments to dispatch
+   *
+   * @returns {this}
+   */
+  dispatch (...args) {
+    for (let i = 0, listenersLength = this.listeners.length; i &lt; listenersLength; i++) {
+      const listener = this.listeners[i]
+
+      if (listener.once) {
+        this.listeners.splice(i)
+      }
+
+      listener.function.call(listener.context, ...args)
+    }
+
+    return this
+  }
+
+  /**
+   * Get the number of listeners
+   *
+   * @returns {number} Listeners number
+   */
+  getListenersNb () {
+    return this.listeners.length
+  }
+
+  /**
+   * Get listener index
+   *
+   * @private
+   *
+   * @param {listenerCallback} cb
+   *
+   * @returns {number} Listener index, default to -1 if the listener is not found
+   */
+  _getListernerIndex (cb) {
+    for (let i = 0, listenersLength = this.listeners.length; i &lt; listenersLength; i++) {
+      if (this.listeners[i].function === cb) {
+        return i
+      }
+    }
+
+    return -1
+  }
+}
+
+/**
+ * Callback called when a signal is dispatched
+ *
+ * @callback Signal~listenerCallback
+ *
+ * @param {...args} args Arguments dispatched
+ */
+
+export default Signal
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Feb 07 2017 22:04:19 GMT+0100 (CET) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
