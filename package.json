@@ -1,7 +1,7 @@
 {
   "name": "quark-signal",
   "version": "0.0.0-development",
-  "description": "Quark signal",
+  "description": "Simple and tiny Observer design pattern implementation",
   "main": "lib/index.js",
   "scripts": {
     "build": "BABEL_ENV=production babel src -d lib",
