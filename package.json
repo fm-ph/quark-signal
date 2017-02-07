@@ -54,13 +54,15 @@
     ],
     "plugins": [
       "add-module-exports",
-      "transform-runtime",
       "transform-object-rest-spread"
     ],
     "ignore": "test.js",
     "env": {
       "development": {
-        "sourceMaps": "inline"
+        "sourceMaps": "inline",
+        "plugins": [
+          "transform-runtime"
+        ]
       }
     }
   },
