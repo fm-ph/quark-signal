@@ -146,6 +146,12 @@ mySignal.add(listener)
 mySignal.removeAll()
 ```
 
+## Notes
+
+In order to prevent an __infinite loop__ if a signal is dispatching itself in an added listener, the maximum dispatch limit is fixed to __512__.
+
+If this limit is reached, it throws an error.
+
 ## API
 
 See [https://fm-ph.github.io/quark-signal/](https://fm-ph.github.io/quark-signal/)
