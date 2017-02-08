@@ -31,7 +31,7 @@ class Signal {
    * @param {Object} [options] Options
    * @param {string} [options.priority=0] Higher priority listener will be called earlier
    * @param {string} [options.once=false] Listener called once
-   * @param {string} [options.context=this] Bind the listener with a specific context
+   * @param {any} [options.context=this] Bind the listener with a specific context
    *
    * @throws {TypeError} First argument must be a Function
    * @throws {Error} Listener already exists
@@ -67,7 +67,7 @@ class Signal {
    * @param {listenerCallback} cb Callback
    * @param {Object} [options] Options
    * @param {string} [options.priority=0] Higher priority listener will be called earlier
-   * @param {string} [options.context=this] Bind the listener with a specific context
+   * @param {any} [options.context=this] Bind the listener with a specific context
    *
    * @returns {this}
    */
