@@ -147,7 +147,7 @@ class Signal {
       throw new Error('Signal.dispatch() : Maximum dispatch limit reached (prevent infinite loop)')
     }
 
-    for (let i = 0, listenersLength = this._listeners.length; i < listenersLength; i++) {
+    for (let i = 0; i < this._listeners.length; i++) {
       const listener = this._listeners[i]
 
       if (listener.once) {
