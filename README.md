@@ -150,7 +150,7 @@ npm test:coverage
 
 ## License
 
-MIT License © [Patrick Heng](http://hengpatrick.fr/) [Fabien Motte](http://fabienmotte.com/) 
+MIT [License](LICENSE.md) © [Patrick Heng](http://hengpatrick.fr/) [Fabien Motte](http://fabienmotte.com/) 
 
 [travis-image]: https://img.shields.io/travis/fm-ph/quark-signal/master.svg?style=flat-square
 [travis-url]: http://travis-ci.org/fm-ph/quark-signal
