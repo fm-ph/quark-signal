@@ -174,6 +174,15 @@ class Signal {
   }
 
   /**
+   * Get the number of dispatch
+   *
+   * @returns {number} Dispatch number
+   */
+  getDispatchNb () {
+    return this._dispatchNb
+  }
+
+  /**
    * Get listener index
    *
    * @private
