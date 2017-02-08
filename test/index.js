@@ -156,12 +156,12 @@ test.cb('create a signal and use a custom listener context', t => {
     foo: 'bar'
   }
 
-  function callback () {
+  function listener () {
     t.is(this.foo, 'bar')
     t.end()
   }
 
-  t.context.signal.add(callback, { context: obj })
+  t.context.signal.add(listener, { context: obj })
 
   t.context.signal.dispatch()
 })
