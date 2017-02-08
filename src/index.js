@@ -117,7 +117,7 @@ class Signal {
       throw new Error('Signal.remove() : Listener does not exist')
     }
 
-    this._listeners.splice(listenerId)
+    this._listeners.splice(listenerId, 1)
 
     return this
   }
