@@ -1,4 +1,11 @@
 /**
+ * @constant
+ * @type number
+ * @default
+ */
+const MAX_DISPATCH_NB = 512
+
+/**
  * Signal class
  *
  * @class
@@ -21,7 +28,17 @@ class Signal {
    * @constructor
    */
   constructor () {
-    this.listeners = []
+    /**
+     * @type array
+     * @private
+     */
+    this._listeners = []
+
+   /**
+     * @type number
+     * @private
+     */
+    this._dispatchNb = 0
   }
 
   /**
@@ -39,24 +56,24 @@ class Signal {
    * @returns {this}
    */
   add (cb, options = { priority: 0, once: false, context: this }) {
-    if (typeof cb !== 'function') {
-      throw new TypeError('QuarkSignal.add() : First argument must be a Function')
-    }
-
-    if (this._getListernerIndex(cb) !== -1) {
-      throw new Error('QuarkSignal.add() : Listener already exists')
-    }
-
     const listener = {
       context: this, // If options object is defined but no context precised
       ...options,
       function: cb
     }
 
-    this.listeners.push(listener)
+    if (typeof listener.function !== 'function') {
+      throw new TypeError('Signal.add() : First argument must be a Function')
+    }
+
+    if (this._getListernerIndex(listener.function, listener.context) !== -1) {
+      throw new Error('Signal.add() : Listener already exists')
+    }
+
+    this._listeners.push(listener)
 
     // Sort listeners function by priority
-    this.listeners.sort((a, b) => a.priority < b.priority)
+    this._listeners.sort((a, b) => a.priority < b.priority)
 
     return this
   }
@@ -82,24 +99,25 @@ class Signal {
    * Remove a listener
    *
    * @param {listenerCallback} cb Callback
+   * @param {any} [context=this] Context specified when the listener was added
    *
    * @returns {this}
    *
    * @throws {TypeError} First argument must be a Function
    * @throws {Error} Listener does not exist
    */
-  remove (cb) {
+  remove (cb, context = this) {
     if (typeof cb !== 'function') {
-      throw new TypeError('QuarkSignal.remove() : First argument must be a Function')
+      throw new TypeError('Signal.remove() : First argument must be a Function')
     }
 
-    const listenerId = this._getListernerIndex(cb)
+    const listenerId = this._getListernerIndex(cb, context)
 
     if (listenerId === -1) {
-      throw new Error('QuarkSignal.remove() : Listener does not exist')
+      throw new Error('Signal.remove() : Listener does not exist')
     }
 
-    this.listeners.splice(listenerId)
+    this._listeners.splice(listenerId)
 
     return this
   }
@@ -110,7 +128,7 @@ class Signal {
    * @returns {this}
    */
   removeAll () {
-    this.listeners = []
+    this._listeners = []
 
     return this
   }
@@ -123,14 +141,24 @@ class Signal {
    * @returns {this}
    */
   dispatch (...args) {
-    for (let i = 0, listenersLength = this.listeners.length; i < listenersLength; i++) {
-      const listener = this.listeners[i]
+    this._dispatchNb++
+
+    if (this._dispatchNb > MAX_DISPATCH_NB) {
+      throw new Error('Signal.dispatch() : Maximum dispatch limit reached (prevent infinite loop)')
+    }
+
+    for (let i = 0, listenersLength = this._listeners.length; i < listenersLength; i++) {
+      const listener = this._listeners[i]
 
       if (listener.once) {
-        this.listeners.splice(i)
+        this._listeners.splice(i)
       }
 
-      listener.function.call(listener.context, ...args)
+      const propagation = listener.function.call(listener.context, ...args)
+
+      if (propagation === false) {
+        break
+      }
     }
 
     return this
@@ -142,7 +170,7 @@ class Signal {
    * @returns {number} Listeners number
    */
   getListenersNb () {
-    return this.listeners.length
+    return this._listeners.length
   }
 
   /**
@@ -150,13 +178,14 @@ class Signal {
    *
    * @private
    *
-   * @param {listenerCallback} cb
+   * @param {listenerCallback} cb Callback
+   * @param {any} [context=this] Context
    *
    * @returns {number} Listener index, default to -1 if the listener is not found
    */
-  _getListernerIndex (cb) {
-    for (let i = 0, listenersLength = this.listeners.length; i < listenersLength; i++) {
-      if (this.listeners[i].function === cb) {
+  _getListernerIndex (cb, context) {
+    for (let i = 0, listenersLength = this._listeners.length; i < listenersLength; i++) {
+      if (this._listeners[i].function === cb && this._listeners[i].context === context) {
         return i
       }
     }
