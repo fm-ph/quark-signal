@@ -86,6 +86,21 @@ mySignal.add(callback, { context: obj })
 mySignal.dispatch()
 ```
 
+### Propagation
+
+Stop the propagation of a dispatched signal by returning `false` in a listener.
+
+```js
+import Signal from 'quark-signal'
+
+const mySignal = new Signal()
+
+mySignal.add(() => false)
+mySignal.add(data => { console.log(data) }) // It will not be called
+
+mySignal.dispatch('foo')
+```
+
 ### Remove
 
 Remove a signal listener.
