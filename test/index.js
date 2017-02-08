@@ -16,7 +16,7 @@ test('create a signal with one listener', t => {
 test('create a signal with an invalid listener type', t => {
   const error = t.throws(() => t.context.signal.add(null), TypeError)
 
-  t.is(error.message, 'QuarkSignal.add() : First argument must be a Function')
+  t.is(error.message, 'Signal.add() : First argument must be a Function')
 })
 
 test('create a signal with a listener that already exists', t => {
@@ -25,7 +25,7 @@ test('create a signal with a listener that already exists', t => {
 
   const error = t.throws(() => t.context.signal.add(listener), Error)
 
-  t.is(error.message, 'QuarkSignal.add() : Listener already exists')
+  t.is(error.message, 'Signal.add() : Listener already exists')
 })
 
 test('create a signal with mutilple listeners', t => {
@@ -70,7 +70,7 @@ test('create a signal with different listeners priority', t => {
   t.context.signal.add(listener1, { priority: 1 })
   t.context.signal.add(listener2, { priority: 2 })
 
-  t.deepEqual(t.context.signal.listeners, [
+  t.deepEqual(t.context.signal._listeners, [
     {
       context: t.context.signal,
       function: listener2,
@@ -91,7 +91,7 @@ test('create a signal with same listeners priority', t => {
   t.context.signal.add(listener1)
   t.context.signal.add(listener2)
 
-  t.deepEqual(t.context.signal.listeners, [
+  t.deepEqual(t.context.signal._listeners, [
     {
       context: t.context.signal,
       function: listener1,
@@ -129,7 +129,7 @@ test('create a signal and remove a listener', t => {
 test('create a signal and remove a listener with an invalid type', t => {
   const error = t.throws(() => t.context.signal.remove(null), TypeError)
 
-  t.is(error.message, 'QuarkSignal.remove() : First argument must be a Function')
+  t.is(error.message, 'Signal.remove() : First argument must be a Function')
 })
 
 test('create a signal and remove a listener not added', t => {
@@ -137,7 +137,7 @@ test('create a signal and remove a listener not added', t => {
 
   const error = t.throws(() => t.context.signal.remove(listenerNotAdded), Error)
 
-  t.is(error.message, 'QuarkSignal.remove() : Listener does not exist')
+  t.is(error.message, 'Signal.remove() : Listener does not exist')
 })
 
 test('create a signal and remove all listeners', t => {
@@ -164,4 +164,23 @@ test.cb('create a signal and use a custom listener context', t => {
   t.context.signal.add(callback, { context: obj })
 
   t.context.signal.dispatch()
+})
+
+test('create a signal that dispatch itself', t => {
+  t.context.signal.add(() => {
+    t.context.signal.dispatch()
+  })
+
+  const error = t.throws(() => t.context.signal.dispatch(), Error)
+
+  t.is(error.message, 'Signal.dispatch() : Maximum dispatch limit reached (prevent infinite loop)')
+})
+
+test('create a signal with a listener that stop the propagation', t => {
+  t.context.signal.add(() => false)
+  t.context.signal.add(() => { })
+
+  t.context.signal.dispatch()
+
+  t.is(t.context.signal.getDispatchNb(), 1)
 })
