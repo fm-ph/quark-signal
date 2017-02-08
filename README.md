@@ -101,6 +101,21 @@ mySignal.add(data => { console.log(data) }) // It will not be called
 mySignal.dispatch('foo')
 ```
 
+### Has
+
+Check if a signal listener exists.
+
+```js
+import Signal from 'quark-signal'
+
+const mySignal = new Signal()
+
+const listener = data => { console.log(data) }
+
+mySignal.add(listener)
+const listenerExists = mySignal.has(listener) // = true
+```
+
 ### Remove
 
 Remove a signal listener.

@@ -184,3 +184,20 @@ test('create a signal with a listener that stop the propagation', t => {
 
   t.is(t.context.signal.getDispatchNb(), 1)
 })
+
+test('create a signal with a listener and check if it exists', t => {
+  const listener = () => { }
+
+  t.context.signal.add(listener)
+  const result = t.context.signal.has(listener)
+
+  t.true(result)
+})
+
+test('create a signal with a listener noy added and check if it exists', t => {
+  const listener = () => { }
+
+  const result = t.context.signal.has(listener)
+
+  t.falsy(result)
+})

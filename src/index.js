@@ -165,6 +165,18 @@ class Signal {
   }
 
   /**
+   * Check if a listener exists
+   *
+   * @param {listenerCallback} cb Callback
+   * @param {any} [context=this] Context specified when the listener was added
+   *
+   * @returns {boolean} True if the listener exists, false otherwise
+   */
+  has (cb, context = this) {
+    return (this._getListernerIndex(cb, context) !== -1)
+  }
+
+  /**
    * Get the number of listeners
    *
    * @returns {number} Listeners number
