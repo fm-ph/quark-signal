@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Signal.html">Signal</a><ul class='methods'><li data-type='method'><a href="Signal.html#add">add</a></li><li data-type='method'><a href="Signal.html#dispatch">dispatch</a></li><li data-type='method'><a href="Signal.html#getListenersNb">getListenersNb</a></li><li data-type='method'><a href="Signal.html#once">once</a></li><li data-type='method'><a href="Signal.html#remove">remove</a></li><li data-type='method'><a href="Signal.html#removeAll">removeAll</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Signal.html">Signal</a><ul class='methods'><li data-type='method'><a href="Signal.html#add">add</a></li><li data-type='method'><a href="Signal.html#dispatch">dispatch</a></li><li data-type='method'><a href="Signal.html#getDispatchNb">getDispatchNb</a></li><li data-type='method'><a href="Signal.html#getListenersNb">getListenersNb</a></li><li data-type='method'><a href="Signal.html#has">has</a></li><li data-type='method'><a href="Signal.html#once">once</a></li><li data-type='method'><a href="Signal.html#remove">remove</a></li><li data-type='method'><a href="Signal.html#removeAll">removeAll</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#MAX_DISPATCH_NB">MAX_DISPATCH_NB</a></li></ul>
 </nav>
 
 <div id="main">
@@ -40,6 +40,13 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
+ * @constant
+ * @type number
+ * @default
+ */
+const MAX_DISPATCH_NB = 512
+
+/**
  * Signal class
  *
  * @class
@@ -62,7 +69,17 @@ class Signal {
    * @constructor
    */
   constructor () {
-    this.listeners = []
+    /**
+     * @type array
+     * @private
+     */
+    this._listeners = []
+
+   /**
+     * @type number
+     * @private
+     */
+    this._dispatchNb = 0
   }
 
   /**
@@ -72,7 +89,7 @@ class Signal {
    * @param {Object} [options] Options
    * @param {string} [options.priority=0] Higher priority listener will be called earlier
    * @param {string} [options.once=false] Listener called once
-   * @param {string} [options.context=this] Bind the listener with a specific context
+   * @param {any} [options.context=this] Bind the listener with a specific context
    *
    * @throws {TypeError} First argument must be a Function
    * @throws {Error} Listener already exists
@@ -80,24 +97,24 @@ class Signal {
    * @returns {this}
    */
   add (cb, options = { priority: 0, once: false, context: this }) {
-    if (typeof cb !== 'function') {
-      throw new TypeError('QuarkSignal.add() : First argument must be a Function')
-    }
-
-    if (this._getListernerIndex(cb) !== -1) {
-      throw new Error('QuarkSignal.add() : Listener already exists')
-    }
-
     const listener = {
       context: this, // If options object is defined but no context precised
       ...options,
       function: cb
     }
 
-    this.listeners.push(listener)
+    if (typeof listener.function !== 'function') {
+      throw new TypeError('Signal.add() : First argument must be a Function')
+    }
+
+    if (this._getListernerIndex(listener.function, listener.context) !== -1) {
+      throw new Error('Signal.add() : Listener already exists')
+    }
+
+    this._listeners.push(listener)
 
     // Sort listeners function by priority
-    this.listeners.sort((a, b) => a.priority &lt; b.priority)
+    this._listeners.sort((a, b) => a.priority &lt; b.priority)
 
     return this
   }
@@ -108,7 +125,7 @@ class Signal {
    * @param {listenerCallback} cb Callback
    * @param {Object} [options] Options
    * @param {string} [options.priority=0] Higher priority listener will be called earlier
-   * @param {string} [options.context=this] Bind the listener with a specific context
+   * @param {any} [options.context=this] Bind the listener with a specific context
    *
    * @returns {this}
    */
@@ -123,24 +140,25 @@ class Signal {
    * Remove a listener
    *
    * @param {listenerCallback} cb Callback
+   * @param {any} [context=this] Context specified when the listener was added
    *
    * @returns {this}
    *
    * @throws {TypeError} First argument must be a Function
    * @throws {Error} Listener does not exist
    */
-  remove (cb) {
+  remove (cb, context = this) {
     if (typeof cb !== 'function') {
-      throw new TypeError('QuarkSignal.remove() : First argument must be a Function')
+      throw new TypeError('Signal.remove() : First argument must be a Function')
     }
 
-    const listenerId = this._getListernerIndex(cb)
+    const listenerId = this._getListernerIndex(cb, context)
 
     if (listenerId === -1) {
-      throw new Error('QuarkSignal.remove() : Listener does not exist')
+      throw new Error('Signal.remove() : Listener does not exist')
     }
 
-    this.listeners.splice(listenerId)
+    this._listeners.splice(listenerId, 1)
 
     return this
   }
@@ -151,7 +169,7 @@ class Signal {
    * @returns {this}
    */
   removeAll () {
-    this.listeners = []
+    this._listeners = []
 
     return this
   }
@@ -164,17 +182,39 @@ class Signal {
    * @returns {this}
    */
   dispatch (...args) {
-    for (let i = 0, listenersLength = this.listeners.length; i &lt; listenersLength; i++) {
-      const listener = this.listeners[i]
+    this._dispatchNb++
+
+    if (this._dispatchNb > MAX_DISPATCH_NB) {
+      throw new Error('Signal.dispatch() : Maximum dispatch limit reached (prevent infinite loop)')
+    }
+
+    for (let i = 0; i &lt; this._listeners.length; i++) {
+      const listener = this._listeners[i]
 
       if (listener.once) {
-        this.listeners.splice(i)
+        this._listeners.splice(i)
       }
 
-      listener.function.call(listener.context, ...args)
+      const propagation = listener.function.call(listener.context, ...args)
+
+      if (propagation === false) {
+        break
+      }
     }
 
     return this
+  }
+
+  /**
+   * Check if a listener exists
+   *
+   * @param {listenerCallback} cb Callback
+   * @param {any} [context=this] Context specified when the listener was added
+   *
+   * @returns {boolean} True if the listener exists, false otherwise
+   */
+  has (cb, context = this) {
+    return (this._getListernerIndex(cb, context) !== -1)
   }
 
   /**
@@ -183,7 +223,16 @@ class Signal {
    * @returns {number} Listeners number
    */
   getListenersNb () {
-    return this.listeners.length
+    return this._listeners.length
+  }
+
+  /**
+   * Get the number of dispatch
+   *
+   * @returns {number} Dispatch number
+   */
+  getDispatchNb () {
+    return this._dispatchNb
   }
 
   /**
@@ -191,13 +240,14 @@ class Signal {
    *
    * @private
    *
-   * @param {listenerCallback} cb
+   * @param {listenerCallback} cb Callback
+   * @param {any} [context=this] Context
    *
    * @returns {number} Listener index, default to -1 if the listener is not found
    */
-  _getListernerIndex (cb) {
-    for (let i = 0, listenersLength = this.listeners.length; i &lt; listenersLength; i++) {
-      if (this.listeners[i].function === cb) {
+  _getListernerIndex (cb, context) {
+    for (let i = 0, listenersLength = this._listeners.length; i &lt; listenersLength; i++) {
+      if (this._listeners[i].function === cb &amp;&amp; this._listeners[i].context === context) {
         return i
       }
     }
@@ -227,7 +277,7 @@ export default Signal
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Feb 07 2017 22:04:19 GMT+0100 (CET) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Feb 09 2017 03:32:44 GMT+0100 (CET) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
