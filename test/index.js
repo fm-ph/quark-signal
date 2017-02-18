@@ -194,7 +194,7 @@ test('create a signal with a listener and check if it exists', t => {
   t.true(result)
 })
 
-test('create a signal with a listener noy added and check if it exists', t => {
+test('create a signal with a listener not added and check if it exists', t => {
   const listener = () => { }
 
   const result = t.context.signal.has(listener)
