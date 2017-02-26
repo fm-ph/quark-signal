@@ -13,13 +13,13 @@ test('create a signal with one listener', t => {
   t.is(t.context.signal.getListenersNb(), 1)
 })
 
-test('create a signal with an invalid listener type', t => {
+test('create a signal with an invalid listener type throws a type error', t => {
   const error = t.throws(() => t.context.signal.add(null), TypeError)
 
   t.is(error.message, 'Signal.add() : First argument must be a Function')
 })
 
-test('create a signal with a listener that already exists', t => {
+test('create a signal with a listener that already exists throws an error', t => {
   const listener = () => { }
   t.context.signal.add(listener)
 
@@ -126,13 +126,13 @@ test('create a signal and remove a listener', t => {
   t.is(t.context.signal.getListenersNb(), 0)
 })
 
-test('create a signal and remove a listener with an invalid type', t => {
+test('create a signal and remove a listener with an invalid type throws a type error', t => {
   const error = t.throws(() => t.context.signal.remove(null), TypeError)
 
   t.is(error.message, 'Signal.remove() : First argument must be a Function')
 })
 
-test('create a signal and remove a listener not added', t => {
+test('create a signal and remove a listener not added throws an error', t => {
   const listenerNotAdded = () => { }
 
   const error = t.throws(() => t.context.signal.remove(listenerNotAdded), Error)
@@ -166,7 +166,7 @@ test.cb('create a signal and use a custom listener context', t => {
   t.context.signal.dispatch()
 })
 
-test('create a signal that dispatch itself', t => {
+test('create a signal that dispatch itself throws an error', t => {
   t.context.signal.add(() => {
     t.context.signal.dispatch()
   })
