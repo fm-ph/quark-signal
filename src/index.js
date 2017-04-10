@@ -1,11 +1,4 @@
 /**
- * @constant
- * @type number
- * @default
- */
-const MAX_DISPATCH_NB = 512
-
-/**
  * Signal class
  *
  * @class
@@ -142,10 +135,6 @@ class Signal {
    */
   dispatch (...args) {
     this._dispatchNb++
-
-    if (this._dispatchNb > MAX_DISPATCH_NB) {
-      throw new Error('Signal.dispatch() : Maximum dispatch limit reached (prevent infinite loop)')
-    }
 
     for (let i = 0; i < this._listeners.length; i++) {
       const listener = this._listeners[i]

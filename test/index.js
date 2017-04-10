@@ -166,16 +166,6 @@ test.cb('create a signal and use a custom listener context', t => {
   t.context.signal.dispatch()
 })
 
-test('create a signal that dispatch itself throws an error', t => {
-  t.context.signal.add(() => {
-    t.context.signal.dispatch()
-  })
-
-  const error = t.throws(() => t.context.signal.dispatch(), Error)
-
-  t.is(error.message, 'Signal.dispatch() : Maximum dispatch limit reached (prevent infinite loop)')
-})
-
 test('create a signal with a listener that stop the propagation', t => {
   t.context.signal.add(() => false)
   t.context.signal.add(() => { })
