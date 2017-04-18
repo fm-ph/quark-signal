@@ -97,7 +97,6 @@ class Signal {
    * @returns {this}
    *
    * @throws {TypeError} First argument must be a Function
-   * @throws {Error} Listener does not exist
    */
   remove (cb, context = this) {
     if (typeof cb !== 'function') {
