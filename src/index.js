@@ -106,11 +106,9 @@ class Signal {
 
     const listenerId = this._getListernerIndex(cb, context)
 
-    if (listenerId === -1) {
-      throw new Error('Signal.remove() : Listener does not exist')
+    if (listenerId !== -1) {
+      this._listeners.splice(listenerId, 1)
     }
-
-    this._listeners.splice(listenerId, 1)
 
     return this
   }
