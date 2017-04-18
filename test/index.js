@@ -132,14 +132,6 @@ test('create a signal and remove a listener with an invalid type throws a type e
   t.is(error.message, 'Signal.remove() : First argument must be a Function')
 })
 
-test('create a signal and remove a listener not added throws an error', t => {
-  const listenerNotAdded = () => { }
-
-  const error = t.throws(() => t.context.signal.remove(listenerNotAdded), Error)
-
-  t.is(error.message, 'Signal.remove() : Listener does not exist')
-})
-
 test('create a signal and remove all listeners', t => {
   t.context.signal.add(() => { })
   t.context.signal.add(() => { })
