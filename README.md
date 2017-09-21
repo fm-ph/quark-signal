@@ -1,4 +1,4 @@
-# quark-signal
+# [<img src="logo.png" alt="quark-signal" width="200">](https://github.com/fm-ph/quark-signal)
 
 [![build status][travis-image]][travis-url]
 [![stability][stability-image]][stability-url]
