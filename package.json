@@ -11,7 +11,7 @@
     "test:watch": "ava --watch --verbose",
     "test:coverage": "nyc npm test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "prepublish": "npm test && npm run build"
+    "prepublishOnly": "npm test && npm run build"
   },
   "keywords": [
     "quark",
